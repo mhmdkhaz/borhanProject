@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+        <!-- style  -->
+        <link rel="stylesheet" href="style.css">
+        <!-- google fonts arabic -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic&display=swap" rel="stylesheet">
+    </head>
+
+    <body>
+        <!-- navbar -->
+
+        <nav class="nav">
+            <input type="checkbox" id="nav-check">
+            <div class="nav-header">
+                <div class="nav-title">
+                    JoGeek
+                </div>
+            </div>
+            <div class="nav-btn">
+                <label for="nav-check">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </label>
+            </div>
+
+            <div class="nav-links">
+                <a href="index.html">home</a>
+                <a href="AboutUs.html">about us</a>
+                <a href="#">Appliances</a>
+            </div>
+        </nav>
+        <!-- start in table -->
+        <div class="container">
+            <div class="cetner" id="tableProduct">
+                <div class="wrap-table100">
+                    <div class="table">
+                        <div class="row header">
+                            <div class="cell">
+                                المنتج
+                            </div>
+                            <div class="cell">
+                                تفاصيل
+                            </div>
+                            <div class="cell">
+                                السعر
+                            </div>
+                            <div class="cell">
+                                صورة
+                            </div>
+                        </div>
+                        <!-- data product -->
+                        <div class="bodyTable">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- cart  -->
+            <div class="cartAll wrap cf" id="cart">
+                <div class="heading cf">
+                    <h1>السلة</h1>
+                </div>
+                <div class="cart">
+                    <!-- data cart -->
+                    <ul class="cartWrap">
+                    </ul>
+                </div>
+                <!-- total price -->
+                <div class="subtotal cf">
+                    <h1>المجموع الكلي</h1>
+                    <h2 style="margin: 10px 0;"></h2>
+                    <!-- cotinue or cancel -->
+                    <div class="btnGroup">
+                        <button class="contiue openFormInfo">اكمال</button>
+                        <a href="#tableProduct"><button class="cancel">الغاء</button></a>
+                    </div>
+                </div>
+            </div>
+            <!-- start in form informartion -->
+            <div class="modal"></div>
+            <div class="formInfo">
+                <div class="titleInfo">
+                    <h1>informartion</h1>
+                    <span class="closeInfo">x</span>
+                </div>
+                <form action="">
+                    <div class="">
+                        <input type="email" placeholder="email">
+                        <input type="text" placeholder="Full Name" class="fullName">
+                    </div>
+                    <div>
+                        <input type="number" placeholder="id Number" class="numberId">
+                        <input type="date">
+                    </div>
+                    <div>
+                        <input type="number" placeholder="phone number" class="phoneNubmer">
+                        <div style="width: 100%;">
+                            <input type="text" id="userInput" placeholder="Enter the CAPTCHA text">
+                            <div id="captcha" readonly></div>
+                        </div>
+                    </div>
+                    <button class="orderdContinue">اطلب</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- fils js -->
+        <script src="myFunction.js"></script>
+    </body>
+
+</html>

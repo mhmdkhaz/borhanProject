@@ -6,7 +6,7 @@ window.onload = function () {
     totalPrice();
   }
 
-  // hide cart or show
+  // Hide cart or show
   styleCart();
 };
 
@@ -102,18 +102,18 @@ const printData = () => {
 
     placeData.innerHTML += `
       <div class="row" data-id="${product.id}">
-        <div class="cell" data-title="Full Name">
+        <div class="cell" >
           ${product.type}
         </div>
-        <div class="cell" data-title="Age">
+        <div class="cell">
           <ul style="text-align:right;">
             ${detailsList}
           </ul>
         </div>
-        <div class="cell" data-title="Job Title">
+        <div class="cell">
           ${product.price}
         </div>
-        <div class="cell" data-title="Location">
+        <div class="cell">
           <img src="${product.images}" alt/>
         </div>
         <div class="cell" data-title="Location">
@@ -160,8 +160,10 @@ const printDataCart = () => {
           <div class="cartSection info">
             <img src="${product.images}" alt="" class="itemImg" />
             <h3>${product.type}</h3>
-            <p>${product.count}</p>
-            <p>${product.price} ل.س</p>
+            <div style="display: flex; flex-direction: column;margin-top:10px">
+              <p style="margin:6px 0">${product.count} العدد</p>
+              <p>${product.price} ل.س</p>
+            </div>
           </div>
           <div class="prodTotal cartSection">
             <p>${product.price * product.count}</p>
@@ -174,31 +176,43 @@ const printDataCart = () => {
 
 const totalPrice = () => {
   let total = 0;
+
   cartProduct.forEach((product) => {
     total += product.price * product.count;
   });
   // print price
-  let supTotal = document.querySelector(".subtotal h2");
+  let supTotal = document.querySelector(".subtotal .total");
   supTotal.innerHTML = total + " ل.س";
+
+  // Tax
+  let taxAmount = total * 0.05;
+  let taxDeductionElement = document.querySelector(".subtotal .TaxDeduction");
+  taxDeductionElement.innerHTML = `${taxAmount}`;
+
+  // suptotal
+  let totalAfterTaxDeduction = total - taxAmount;
+  let supTotalPrice = document.querySelector(".subtotal .supTotalPrice");
+  supTotalPrice.innerHTML = `${totalAfterTaxDeduction}`;
 };
 
 const cancelOrder = () => {
   let cart = document.querySelector(".cartWrap");
-  let supTotal = document.querySelector(".subtotal h2");
+  let supTotal = document.querySelector(".subtotal .total");
   cart.innerHTML = "";
   supTotal.innerHTML = 0;
 
-  // empty data from array
+  // Empty data from array
   cartProduct = [];
-  // remove data from local storage
+  // Remove data from local storage
   localStorage.removeItem("cartProducts");
+  console.log("Item removed from local storage");
   // hide cart
   styleCart();
 };
 let cancel = document.querySelector(".cancel");
 cancel.addEventListener("click", cancelOrder);
 
-// ---- filter form ----
+// ---- filter form  ----
 
 let isArabicValid = false;
 let isIdValid = false;
@@ -260,6 +274,14 @@ const validateInput = () => {
   }
 };
 
+function changePlaceDate() {
+  document.addEventListener("DOMContentLoaded", function () {
+    const inputField = document.getElementById("dateInput");
+    inputField.setAttribute("placeholder", "dd/mm/yyyy");
+  });
+}
+changePlaceDate();
+
 // Function to generate random alphanumeric CAPTCHA text
 function generateCaptchaText(length) {
   const characters =
@@ -303,16 +325,27 @@ function validateCaptcha() {
 displayCaptcha();
 
 let orderd = document.querySelector(".orderdContinue");
-orderd.addEventListener("click", () => {
+let sucsess = document.querySelector(".sucsess");
+const formInfo = document.querySelector(".formInfo");
+const modal = document.querySelector(".modal");
+
+orderd.addEventListener("click", (e) => {
   validateInput();
   validateCaptcha();
+  e.preventDefault();
   if (isArabicValid && isIdValid && isCaptchaValid) {
-    alert("تم تأكيد الطلب بنجاح!"); // رسالة عند تحقق جميع الشروط
+    sucsess.style.top = "50%";
+    formInfo.style.transform = "scale(1)";
+    modal.style.transform = "scale(1)";
+    setTimeout(() => {
+      sucsess.style.top = "-100%";
+      formInfo.style.transform = "scale(0)";
+      modal.style.transform = "scale(0)";
+    }, 2000);
   }
 });
 
 // style cart
-
 const cartAll = document.querySelector(".cartAll");
 const styleCart = () => {
   if (cartProduct.length > 0) {
@@ -323,9 +356,6 @@ const styleCart = () => {
 };
 
 // close information
-const formInfo = document.querySelector(".formInfo");
-const modal = document.querySelector(".modal");
-
 const closeInfoBtn = document.querySelector(".closeInfo");
 const closeInfoFun = () => {
   formInfo.style.transition = "transform 0.3s ease"; // Apply transition property

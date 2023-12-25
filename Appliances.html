@@ -75,8 +75,18 @@
                 </div>
                 <!-- total price -->
                 <div class="subtotal cf">
-                    <h1>المجموع الكلي</h1>
-                    <h2 style="margin: 10px 0;"></h2>
+                    <div>
+                        <h1>المجموع الكلي</h1>
+                        <h3 class="total" style="margin: 10px 0;"></h3>
+                    </div>
+                    <div>
+                        <h1>%الضريبة 5</h1>
+                        <h3 class="TaxDeduction" style="margin: 10px 0;"></h3>
+                    </div>
+                    <div>
+                        <h1>المجموع الكلي</h1>
+                        <h3 class="supTotalPrice" style="margin: 10px 0;"></h3>
+                    </div>
                     <!-- cotinue or cancel -->
                     <div class="btnGroup">
                         <button class="contiue openFormInfo">اكمال</button>
@@ -98,7 +108,7 @@
                     </div>
                     <div>
                         <input type="number" placeholder="id Number" class="numberId">
-                        <input type="date">
+                        <input type="date" id="dateInput" placeholder="dd/mm/yyyy" />
                     </div>
                     <div>
                         <input type="number" placeholder="phone number" class="phoneNubmer">
@@ -110,6 +120,11 @@
                     <button class="orderdContinue">اطلب</button>
                 </form>
             </div>
+        </div>
+        <!-- sucsess confirm -->
+        <div class="modalSucsess"></div>
+        <div class="sucsess">
+            <h1>تم تأكيد طلبك بنجاح</h1>
         </div>
 
         <!-- fils js -->

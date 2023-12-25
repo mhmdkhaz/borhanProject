@@ -1,12 +1,15 @@
+let total = 0; // Declare total as a global variable
+let grandTotal = 0; // Declare grandTotal as a global variable
+
 window.onload = function () {
   let storedProducts = localStorage.getItem("cartProducts");
   if (storedProducts) {
     cartProduct = JSON.parse(storedProducts);
     printDataCart();
-    totalPrice();
+    updateTotal(); // Update total and tax after loading the cart
   }
 
-  // Hide cart or show
+  // hide cart or show
   styleCart();
 };
 
@@ -102,18 +105,18 @@ const printData = () => {
 
     placeData.innerHTML += `
       <div class="row" data-id="${product.id}">
-        <div class="cell" >
+        <div class="cell" data-title="Full Name">
           ${product.type}
         </div>
-        <div class="cell">
+        <div class="cell" data-title="Age">
           <ul style="text-align:right;">
             ${detailsList}
           </ul>
         </div>
-        <div class="cell">
+        <div class="cell" data-title="Job Title">
           ${product.price}
         </div>
-        <div class="cell">
+        <div class="cell" data-title="Location">
           <img src="${product.images}" alt/>
         </div>
         <div class="cell" data-title="Location">
@@ -129,7 +132,7 @@ printData();
 const allFun = (id) => {
   filterData(id);
   printDataCart();
-  totalPrice();
+  updateTotal();
   styleCart();
   //  save data in localStorage
   localStorage.setItem("cartProducts", JSON.stringify(cartProduct));
@@ -151,8 +154,9 @@ const filterData = (id) => {
 
 const printDataCart = () => {
   let cart = document.querySelector(".cartWrap");
-  cart.innerHTML = ""; // مسح العناصر السابقة
+  cart.innerHTML = "";
 
+  total = 0;
   cartProduct.forEach((product) => {
     cart.innerHTML += `
       <li class="items even" style="margin:10px">
@@ -160,10 +164,8 @@ const printDataCart = () => {
           <div class="cartSection info">
             <img src="${product.images}" alt="" class="itemImg" />
             <h3>${product.type}</h3>
-            <div style="display: flex; flex-direction: column;margin-top:10px">
-              <p style="margin:6px 0">${product.count} العدد</p>
-              <p>${product.price} ل.س</p>
-            </div>
+            <p>السعر الفردي: &nbsp;${product.price}&nbsp; ل.س</p><br>
+            <p> العدد: ${product.count} </p>
           </div>
           <div class="prodTotal cartSection">
             <p>${product.price * product.count}</p>
@@ -171,48 +173,40 @@ const printDataCart = () => {
         </div>
       </li>
     `;
-  });
-};
 
-const totalPrice = () => {
-  let total = 0;
-
-  cartProduct.forEach((product) => {
     total += product.price * product.count;
   });
-  // print price
-  let supTotal = document.querySelector(".subtotal .total");
-  supTotal.innerHTML = total + " ل.س";
 
-  // Tax
-  let taxAmount = total * 0.05;
-  let taxDeductionElement = document.querySelector(".subtotal .TaxDeduction");
-  taxDeductionElement.innerHTML = `${taxAmount}`;
+  // Update total and tax before updating HTML elements
+  updateTotal();
 
-  // suptotal
-  let totalAfterTaxDeduction = total - taxAmount;
-  let supTotalPrice = document.querySelector(".subtotal .supTotalPrice");
-  supTotalPrice.innerHTML = `${totalAfterTaxDeduction}`;
+  // Update HTML elements
+  let supTotal = document.querySelector("#totalAmount");
+  let taxDisplay = document.querySelector("#taxAmount");
+  let grandTotalDisplay = document.querySelector("#grandTotalAmount");
+
+  supTotal.innerHTML = total.toLocaleString() + " ل.س";
+  taxDisplay.innerHTML = (total * 0.05).toLocaleString() + " ل.س";
+  grandTotalDisplay.innerHTML = (total * 1.05).toLocaleString() + " ل.س";
 };
 
 const cancelOrder = () => {
   let cart = document.querySelector(".cartWrap");
-  let supTotal = document.querySelector(".subtotal .total");
+  let supTotal = document.querySelector(".subtotal h2");
   cart.innerHTML = "";
   supTotal.innerHTML = 0;
 
-  // Empty data from array
+  // empty data from array
   cartProduct = [];
-  // Remove data from local storage
+  // remove data from local storage
   localStorage.removeItem("cartProducts");
-  console.log("Item removed from local storage");
   // hide cart
   styleCart();
 };
 let cancel = document.querySelector(".cancel");
 cancel.addEventListener("click", cancelOrder);
 
-// ---- filter form  ----
+// ---- filter form ----
 
 let isArabicValid = false;
 let isIdValid = false;
@@ -274,14 +268,6 @@ const validateInput = () => {
   }
 };
 
-function changePlaceDate() {
-  document.addEventListener("DOMContentLoaded", function () {
-    const inputField = document.getElementById("dateInput");
-    inputField.setAttribute("placeholder", "dd/mm/yyyy");
-  });
-}
-changePlaceDate();
-
 // Function to generate random alphanumeric CAPTCHA text
 function generateCaptchaText(length) {
   const characters =
@@ -325,27 +311,20 @@ function validateCaptcha() {
 displayCaptcha();
 
 let orderd = document.querySelector(".orderdContinue");
-let sucsess = document.querySelector(".sucsess");
-const formInfo = document.querySelector(".formInfo");
-const modal = document.querySelector(".modal");
-
-orderd.addEventListener("click", (e) => {
+orderd.addEventListener("click", () => {
   validateInput();
   validateCaptcha();
-  e.preventDefault();
   if (isArabicValid && isIdValid && isCaptchaValid) {
-    sucsess.style.top = "50%";
-    formInfo.style.transform = "scale(1)";
-    modal.style.transform = "scale(1)";
-    setTimeout(() => {
-      sucsess.style.top = "-100%";
-      formInfo.style.transform = "scale(0)";
-      modal.style.transform = "scale(0)";
-    }, 2000);
+    alert(
+      "تم تأكيد الطلب بنجاح! السعر النهائي مع الضريبة :" +
+        grandTotal.toLocaleString() +
+        " ل.س"
+    ); // رسالة عند تحقق جميع الشروط
   }
 });
 
 // style cart
+
 const cartAll = document.querySelector(".cartAll");
 const styleCart = () => {
   if (cartProduct.length > 0) {
@@ -356,6 +335,9 @@ const styleCart = () => {
 };
 
 // close information
+const formInfo = document.querySelector(".formInfo");
+const modal = document.querySelector(".modal");
+
 const closeInfoBtn = document.querySelector(".closeInfo");
 const closeInfoFun = () => {
   formInfo.style.transition = "transform 0.3s ease"; // Apply transition property
@@ -375,3 +357,32 @@ const openFormInfooFun = () => {
   modal.style.transform = "scale(1)";
 };
 openFormInfo.addEventListener("click", () => openFormInfooFun());
+
+const TAX_RATE = 0.05; // 5% tax rate
+
+// Display the total amount, tax, and grand total
+const updateTotal = () => {
+  total = 0;
+  grandTotal = 0; // Reset grandTotal before recalculating
+
+  cartProduct.forEach((product) => {
+    total += product.price * product.count;
+  });
+
+  // Calculate tax (5%)
+  const taxAmount = total * 0.05;
+
+  // Calculate grand total after tax
+  grandTotal = total + taxAmount;
+
+  // Display tax and grand total
+  let taxElement = document.getElementById("taxAmount");
+  let grandTotalElement = document.getElementById("grandTotalAmount");
+
+  taxElement.textContent = taxAmount.toLocaleString() + " ل.س";
+  grandTotalElement.textContent = grandTotal.toLocaleString() + " ل.س";
+
+  // Display the total amount
+  let totalElement = document.getElementById("totalAmount");
+  totalElement.textContent = total.toLocaleString() + " ل.س";
+};
